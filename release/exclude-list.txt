@@ -1,0 +1,12 @@
+*.DS_Store
+*.gitignore
+*.php-cs.dist
+*.php-cs.cache
+*.travis.yml
+*composer.lock
+*CONTRIBUTING.md
+*README.md
+*.git*
+*release*
+*src*
+*vendor*
