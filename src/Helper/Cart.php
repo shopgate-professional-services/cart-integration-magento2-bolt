@@ -28,6 +28,7 @@ use Magento\Framework\Api\SimpleDataObjectConverter;
 use Shopgate\Base\Model\Config;
 use Shopgate\Base\Model\Utility\SgLoggerInterface;
 use Shopgate\Export\Helper\Quote as QuoteHelper;
+use Magento\Framework\Serialize\SerializerInterface;
 
 class Cart extends OriginalCartHelper
 {
@@ -43,20 +44,24 @@ class Cart extends OriginalCartHelper
     protected $request;
     /** @var bool */
     protected $isBoltRequest;
+    /** @var SerializerInterface */
+    private $serializer;
 
     /**
-     * @param Config            $config
-     * @param SgLoggerInterface $logger
-     * @param QuoteHelper       $quoteHelper
-     * @param RequestInterface  $request
-     * @param array             $quoteFields
-     * @param array             $quoteStockFields
+     * @param Config              $config
+     * @param SgLoggerInterface   $logger
+     * @param QuoteHelper         $quoteHelper
+     * @param RequestInterface    $request
+     * @param SerializerInterface $serializer
+     * @param array               $quoteFields
+     * @param array               $quoteStockFields
      */
     public function __construct(
         Config $config,
         SgLoggerInterface $logger,
         QuoteHelper $quoteHelper,
         RequestInterface $request,
+        SerializerInterface $serializer,
         array $quoteFields = [],
         array $quoteStockFields = []
     ) {
@@ -65,6 +70,7 @@ class Cart extends OriginalCartHelper
         $this->quoteHelper   = $quoteHelper;
         $this->quoteFields   = $quoteFields;
         $this->request       = $request;
+        $this->serializer    = $serializer;
         $this->isBoltRequest = $this->getBoltRequestFlag($request);
         parent::__construct($config, $logger, $quoteHelper, $quoteFields, $quoteStockFields);
     }
@@ -114,17 +120,10 @@ class Cart extends OriginalCartHelper
      */
     protected function getInternalCartInfo()
     {
-        $isRequestEmpty = empty($this->request) ? 'yes' : 'no';
-        $requestCart = $this->request->getParam('cart');
-        $internalCartInfo = $requestCart['internal_cart_info'];
         if ($this->isBoltRequest) {
-            return json_encode([
+            return $this->serializer->serialize([
                 'quote_id' => $this->quoteHelper->getCurrentQuoteId(),
                 'reserved_order_id' => $this->quoteHelper->getReservedOrderId(),
-                'new_cart_used' => 'yes',
-                'is_request_empty' => $isRequestEmpty,
-                'request_internal_cart_info' => $internalCartInfo,
-                'class_is_bolt_request' => $this->isBoltRequest
             ]);
         }
         return '{}';
@@ -134,14 +133,12 @@ class Cart extends OriginalCartHelper
     {
         $requestCart = $request->getParam('cart');
 
-        if (empty($requestCart)) {
+        if (empty($requestCart) || empty($requestCart['internal_cart_info'])) {
             return false;
         }
-        $internalCartInfo = new \stdClass;
-        if (!empty($requestCart['internal_cart_info'])) {
-            $internalCartInfo = json_decode($requestCart['internal_cart_info']);
-        }
 
-        return !empty($internalCartInfo->{'bolt_request'}) ? $internalCartInfo->{'bolt_request'} : false;
+        $internalCartInfo = $this->serializer->unserialize($requestCart['internal_cart_info']);
+
+        return !empty($internalCartInfo['bolt_request']) ? $internalCartInfo['bolt_request'] : false;
     }
 }
