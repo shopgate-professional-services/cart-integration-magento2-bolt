@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "license": "Apache-2.0",
     "require": {
-        "shopgate/cart-integration-magento2-base": "2.9.16",
-        "shopgate/cart-integration-magento2-export": "2.9.13"
+        "shopgate/cart-integration-magento2-base": "2.9.17",
+        "shopgate/cart-integration-magento2-export": "2.9.14"
     }
 }

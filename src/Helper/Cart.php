@@ -129,6 +129,11 @@ class Cart extends OriginalCartHelper
         return '{}';
     }
 
+    /**
+     * @param RequestInterface $request
+     *
+     * @return bool
+     */
     private function getBoltRequestFlag(RequestInterface $request)
     {
         $requestCart = $request->getParam('cart');
