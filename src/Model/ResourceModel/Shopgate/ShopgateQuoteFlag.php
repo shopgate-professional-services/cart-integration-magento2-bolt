@@ -22,6 +22,7 @@
 
 namespace Shopgate\Bolt\Model\ResourceModel\Shopgate;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class ShopgateQuoteFlag extends AbstractDb
@@ -32,5 +33,22 @@ class ShopgateQuoteFlag extends AbstractDb
     protected function _construct()
     {
         $this->_init('shopgate_bolt_quote_flags', 'id');
+    }
+
+    /**
+     * Gets flag by quote_id
+     *
+     * @param integer $quoteId
+     *
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getByQuoteId($quoteId)
+    {
+        $connection = $this->getConnection();
+        $select     = $connection->select()->from($this->getMainTable())->where('quote_id = :quoteId');
+        $bind       = [':quoteId' => (integer) $quoteId];
+
+        return $connection->fetchRow($select, $bind);
     }
 }

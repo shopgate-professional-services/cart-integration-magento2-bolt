@@ -22,8 +22,8 @@
 
 namespace Shopgate\Bolt\Model\Shopgate;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
-use Shopgate\Bolt\Model\ResourceModel\Shopgate\ShopgateQuoteFlag as ShopgateQuoteFlagResource;
 
 class ShopgateQuoteFlag extends AbstractModel
 {
@@ -33,7 +33,24 @@ class ShopgateQuoteFlag extends AbstractModel
      */
     protected function _construct()
     {
-        $this->_init(ShopgateQuoteFlagResource::class);
+        $this->_init('Shopgate\Bolt\Model\ResourceModel\Shopgate\ShopgateQuoteFlag');
     }
 
+    /**
+     * @codingStandardsIgnoreEnd
+     *
+     * @param integer $quoteId
+     *
+     * @return ShopgateQuoteFlag
+     * @throws LocalizedException
+     */
+    public function loadByQuoteId($quoteId)
+    {
+        $flag = $this->_getResource()->getByQuoteId($quoteId);
+        if (!empty($flag)) {
+            $this->setData($flag);
+        }
+
+        return $this;
+    }
 }

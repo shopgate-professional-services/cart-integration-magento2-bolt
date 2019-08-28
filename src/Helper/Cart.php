@@ -29,9 +29,6 @@ use Shopgate\Base\Model\Config;
 use Shopgate\Base\Model\Utility\SgLoggerInterface;
 use Shopgate\Export\Helper\Quote as QuoteHelper;
 use Magento\Framework\Serialize\SerializerInterface;
-use Shopgate\Bolt\Model\Shopgate\ShopgateQuoteFlag;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
 
 class Cart extends OriginalCartHelper
 {
@@ -50,11 +47,7 @@ class Cart extends OriginalCartHelper
     /** @var SerializerInterface */
     private $serializer;
     /** @var ShopgateQuoteFlag */
-    private $quoteFlag;
-    /** @var Context */
-    private $context;
-    /** @var Registry */
-    private $registry;
+    private $quoteFlagHelper;
 
     /**
      * @param Config              $config
@@ -62,9 +55,7 @@ class Cart extends OriginalCartHelper
      * @param QuoteHelper         $quoteHelper
      * @param RequestInterface    $request
      * @param SerializerInterface $serializer
-     * @param ShopgateQuoteFlag   $quoteFlag,
-     * @param Context             $context,
-     * @param Registry            $registry,
+     * @param ShopgateQuoteFlag   $quoteFlagHelper
      * @param array               $quoteFields
      * @param array               $quoteStockFields
      */
@@ -74,9 +65,7 @@ class Cart extends OriginalCartHelper
         QuoteHelper $quoteHelper,
         RequestInterface $request,
         SerializerInterface $serializer,
-        ShopgateQuoteFlag $quoteFlag,
-        Context $context,
-        Registry $registry,
+        ShopgateQuoteFlag $quoteFlagHelper,
         array $quoteFields = [],
         array $quoteStockFields = []
     ) {
@@ -87,9 +76,7 @@ class Cart extends OriginalCartHelper
         $this->request       = $request;
         $this->serializer    = $serializer;
         $this->isBoltRequest = $this->getBoltRequestFlag($request);
-        $this->quoteFlag     = $quoteFlag;
-        $this->context       = $context;
-        $this->registry      = $registry;
+        $this->quoteFlagHelper     = $quoteFlagHelper;
         parent::__construct($config, $logger, $quoteHelper, $quoteFields, $quoteStockFields);
     }
 
@@ -105,7 +92,7 @@ class Cart extends OriginalCartHelper
         $fields = $this->loadMethods($this->config->getSupportedFieldsCheckCart());
         if ($this->isBoltRequest) {
             $this->quoteHelper->addBoltParentId();
-            $this->setShopgateQuoteFlag();
+            $this->quoteFlagHelper->setShopgateQuoteFlag($this->quoteHelper->getCurrentQuoteId());
         }
         if (!$this->isBoltRequest) {
             $this->quoteHelper->cleanup();
@@ -148,13 +135,11 @@ class Cart extends OriginalCartHelper
         return '{}';
     }
 
-    private function setShopgateQuoteFlag()
-    {
-        $shopgateQuoteFlag = new $this->quoteFlag($this->context, $this->registry);
-        $shopgateQuoteFlag->setQuoteId($this->quoteHelper->getCurrentQuoteId());
-        $shopgateQuoteFlag->setIsShopgateOrder(true);
-    }
-
+    /**
+     * @param RequestInterface $request
+     *
+     * @return bool
+     */
     private function getBoltRequestFlag(RequestInterface $request)
     {
         $requestCart = $request->getParam('cart');

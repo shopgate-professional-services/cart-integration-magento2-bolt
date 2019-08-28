@@ -61,12 +61,6 @@ class InstallSchema implements InstallSchemaInterface
                 null,
                 ['unsigned' => true, 'nullable' => false, 'default' => '0'],
                 'Quote Id'
-            )->addColumn(
-                'is_shopgate_order',
-                Table::TYPE_BOOLEAN,
-                null,
-                ['unsigned' => true],
-                'is Shopgate order'
             )->addForeignKey(
                 $installer->getFkName(self::TABLE_NAME_SG_BOLT_FLAGS, 'quote_id', 'quote', 'entity_id'),
                 'quote_id',
