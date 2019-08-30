@@ -46,6 +46,8 @@ class Cart extends OriginalCartHelper
     protected $isBoltRequest;
     /** @var SerializerInterface */
     private $serializer;
+    /** @var ShopgateQuoteFlag */
+    private $quoteFlagHelper;
 
     /**
      * @param Config              $config
@@ -53,6 +55,7 @@ class Cart extends OriginalCartHelper
      * @param QuoteHelper         $quoteHelper
      * @param RequestInterface    $request
      * @param SerializerInterface $serializer
+     * @param ShopgateQuoteFlag   $quoteFlagHelper
      * @param array               $quoteFields
      * @param array               $quoteStockFields
      */
@@ -62,6 +65,7 @@ class Cart extends OriginalCartHelper
         QuoteHelper $quoteHelper,
         RequestInterface $request,
         SerializerInterface $serializer,
+        ShopgateQuoteFlag $quoteFlagHelper,
         array $quoteFields = [],
         array $quoteStockFields = []
     ) {
@@ -72,6 +76,7 @@ class Cart extends OriginalCartHelper
         $this->request       = $request;
         $this->serializer    = $serializer;
         $this->isBoltRequest = $this->getBoltRequestFlag($request);
+        $this->quoteFlagHelper     = $quoteFlagHelper;
         parent::__construct($config, $logger, $quoteHelper, $quoteFields, $quoteStockFields);
     }
 
@@ -87,6 +92,7 @@ class Cart extends OriginalCartHelper
         $fields = $this->loadMethods($this->config->getSupportedFieldsCheckCart());
         if ($this->isBoltRequest) {
             $this->quoteHelper->addBoltParentId();
+            $this->quoteFlagHelper->setShopgateQuoteFlag($this->quoteHelper->getCurrentQuoteId());
         }
         if (!$this->isBoltRequest) {
             $this->quoteHelper->cleanup();
@@ -123,7 +129,7 @@ class Cart extends OriginalCartHelper
         if ($this->isBoltRequest) {
             return $this->serializer->serialize([
                 'quote_id' => $this->quoteHelper->getCurrentQuoteId(),
-                'reserved_order_id' => $this->quoteHelper->getReservedOrderId(),
+                'reserved_order_id' => $this->quoteHelper->getReservedOrderId()
             ]);
         }
         return '{}';
