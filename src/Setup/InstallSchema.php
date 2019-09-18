@@ -26,7 +26,6 @@ use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Shopgate\Connect\Api\Data\LogInterface;
 
 class InstallSchema implements InstallSchemaInterface
 {
@@ -50,7 +49,7 @@ class InstallSchema implements InstallSchemaInterface
         $table = $installer->getConnection()
             ->newTable($installer->getTable(self::TABLE_NAME_SG_BOLT_FLAGS))
             ->addColumn(
-                LogInterface::ID,
+                'id',
                 Table::TYPE_INTEGER,
                 null,
                 ['identity' => true, 'nullable' => false, 'primary' => true, 'unsigned' => true],

@@ -45,4 +45,12 @@ class Quote extends OriginalQuoteHelper
         }
         return $this->quote->reserveOrderId()->getReservedOrderId();
     }
+
+    /**
+     * @return string
+     */
+    public function getCurrentQuoteId()
+    {
+        return $this->quote->getId();
+    }
 }
