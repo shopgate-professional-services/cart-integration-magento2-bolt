@@ -28,6 +28,7 @@ use Magento\Framework\Api\SimpleDataObjectConverter;
 use Shopgate\Base\Model\Config;
 use Shopgate\Base\Model\Utility\SgLoggerInterface;
 use Shopgate\Export\Helper\Quote as QuoteHelper;
+use Shopgate\Export\Helper\Customer as CustomerHelper;
 use Magento\Framework\Serialize\SerializerInterface;
 
 class Cart extends OriginalCartHelper
@@ -38,6 +39,8 @@ class Cart extends OriginalCartHelper
     private $logger;
     /** @var QuoteHelper */
     private $quoteHelper;
+    /** @var CustomerHelper */
+    private $customerHelper;
     /** @var array */
     private $quoteFields;
     /** @var RequestInterface */
@@ -63,6 +66,7 @@ class Cart extends OriginalCartHelper
         Config $config,
         SgLoggerInterface $logger,
         QuoteHelper $quoteHelper,
+        CustomerHelper $customerHelper,
         RequestInterface $request,
         SerializerInterface $serializer,
         ShopgateQuoteFlag $quoteFlagHelper,
@@ -77,7 +81,7 @@ class Cart extends OriginalCartHelper
         $this->serializer    = $serializer;
         $this->isBoltRequest = $this->getBoltRequestFlag($request);
         $this->quoteFlagHelper     = $quoteFlagHelper;
-        parent::__construct($config, $logger, $quoteHelper, $quoteFields, $quoteStockFields);
+        parent::__construct($config, $logger, $quoteHelper, $customerHelper, $quoteFields, $quoteStockFields);
     }
 
     /**
