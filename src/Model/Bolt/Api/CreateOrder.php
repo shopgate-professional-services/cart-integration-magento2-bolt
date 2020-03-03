@@ -105,6 +105,7 @@ class CreateOrder extends originalCreateOrder
         $this->logHelper = $logHelper;
         $this->request = $request;
         $this->bugsnag = $bugsnag;
+        $this->metricsClient = $metricsClient;
         $this->response = $response;
         $this->cartHelper = $cartHelper;
         $this->shopgateQuoteFlagHelper = $shopgateQuoteFlagHelper;
@@ -150,6 +151,7 @@ class CreateOrder extends originalCreateOrder
             $immutableQuote = $this->loadQuoteData($quoteId);
 
             $this->preProcessWebhook($immutableQuote->getStoreId());
+            $immutableQuote->getStore()->setCurrentCurrencyCode($immutableQuote->getQuoteCurrencyCode());
 
             $transaction = json_decode($payload);
 
