@@ -3,6 +3,7 @@
 
 namespace Shopgate\Bolt\Model\Bolt\Api;
 
+use Bolt\Boltpay\Helper\Shared\CurrencyUtils;
 use Bolt\Boltpay\Model\Api\CreateOrder as originalCreateOrder;
 use Bolt\Boltpay\Api\CreateOrderInterface;
 use Bolt\Boltpay\Exception\BoltException;
@@ -170,7 +171,7 @@ class CreateOrder extends originalCreateOrder
                 'status'    => 'success',
                 'message'   => 'Order create was successful',
                 'display_id' => $createdOrder->getIncrementId() . ' / ' . $quote->getId(),
-                'total'      => $this->cartHelper->getRoundAmount($createdOrder->getGrandTotal()),
+                'total'      => CurrencyUtils::toMinor($createdOrder->getGrandTotal(), $currency),
             ];
 
             if (!$isShopgateOrder) {
