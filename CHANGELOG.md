@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [0.3.0]
 ### Changed
 - compatible with boltpay/bolt-magento2 ^2.4
+- no longer supports boltpay/bolt-magento versions below 2.4
 
 ## [0.2.6]
 ### Fixed
