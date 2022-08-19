@@ -8,6 +8,7 @@ use Bolt\Boltpay\Model\Api\CreateOrder as originalCreateOrder;
 use Bolt\Boltpay\Api\CreateOrderInterface;
 use Bolt\Boltpay\Exception\BoltException;
 use Bolt\Boltpay\Helper\Cart;
+use Bolt\Boltpay\Model\EventsForThirdPartyModules;
 use Magento\Framework\Exception\LocalizedException;
 use Bolt\Boltpay\Helper\Order as OrderHelper;
 use Bolt\Boltpay\Helper\Cart as CartHelper;
@@ -71,20 +72,21 @@ class CreateOrder extends originalCreateOrder
     private $shopgateQuoteFlagHelper;
 
     /**
-     * @param HookHelper               $hookHelper
-     * @param OrderHelper              $orderHelper
-     * @param CartHelper               $cartHelper
-     * @param LogHelper                $logHelper
-     * @param Request                  $request
-     * @param Bugsnag                  $bugsnag
-     * @param MetricsClient        $metricsClient
-     * @param Response                 $response
-     * @param UrlInterface             $url
-     * @param BackendUrl               $backendUrl
-     * @param ConfigHelper             $configHelper
-     * @param StockRegistryInterface   $stockRegistry
-     * @param SessionHelper            $sessionHelper
-     * @param ShopgateQuoteFlag        $shopgateQuoteFlagHelper
+     * @param HookHelper                 $hookHelper
+     * @param OrderHelper                $orderHelper
+     * @param CartHelper                 $cartHelper
+     * @param LogHelper                  $logHelper
+     * @param Request                    $request
+     * @param Bugsnag                    $bugsnag
+     * @param MetricsClient              $metricsClient
+     * @param Response                   $response
+     * @param UrlInterface               $url
+     * @param BackendUrl                 $backendUrl
+     * @param ConfigHelper               $configHelper
+     * @param StockRegistryInterface     $stockRegistry
+     * @param SessionHelper              $sessionHelper
+     * @param EventsForThirdPartyModules $eventsForThirdPartyModules
+     * @param ShopgateQuoteFlag          $shopgateQuoteFlagHelper
      */
     public function __construct(
         HookHelper $hookHelper,
@@ -100,6 +102,7 @@ class CreateOrder extends originalCreateOrder
         ConfigHelper $configHelper,
         StockRegistryInterface $stockRegistry,
         SessionHelper $sessionHelper,
+        EventsForThirdPartyModules $eventsForThirdPartyModules,
         ShopgateQuoteFlag $shopgateQuoteFlagHelper
     ) {
         $this->orderHelper = $orderHelper;
@@ -110,7 +113,7 @@ class CreateOrder extends originalCreateOrder
         $this->response = $response;
         $this->cartHelper = $cartHelper;
         $this->shopgateQuoteFlagHelper = $shopgateQuoteFlagHelper;
-        parent::__construct($hookHelper, $orderHelper, $cartHelper, $logHelper, $request, $bugsnag, $metricsClient, $response, $url, $backendUrl, $configHelper, $stockRegistry, $sessionHelper);
+        parent::__construct($hookHelper, $orderHelper, $cartHelper, $logHelper, $request, $bugsnag, $metricsClient, $response, $url, $backendUrl, $configHelper, $stockRegistry, $sessionHelper, $eventsForThirdPartyModules);
     }
 
     /**
